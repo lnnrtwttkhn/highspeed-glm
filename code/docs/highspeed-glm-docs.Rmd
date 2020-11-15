@@ -1,0 +1,29 @@
+```{r, echo=FALSE, message=FALSE, include=FALSE}
+if (!requireNamespace("pacman")) install.packages("pacman")
+packages_cran <- c("here")
+pacman::p_load(char = packages_cran)
+if (basename(here::here()) == "highspeed"){
+  path_root = here::here("highspeed-glm")
+} else {
+  path_root = here::here()
+}
+```
+
+## First-level GLMs
+
+### Main GLM workflow (`highspeed-glm-main.py`)
+
+```{python, echo=TRUE, code=readLines(file.path(path_root, "code", "glm", "highspeed-glm-main.py")), eval=FALSE, python.reticulate=FALSE}
+```
+
+### Extra GLM functions ((`highspeed-glm-functions.py`))
+
+```{python, echo=TRUE, code=readLines(file.path(path_root, "code", "glm", "highspeed_glm_functions.py")), eval=FALSE, python.reticulate=FALSE}
+```
+
+### Requirements
+
+The `requirements.txt` file lists the required packages which can be installed e.g., using `pip install -r requirements.txt`
+
+```{bash, echo=TRUE, code=readLines(file.path(path_root, "code", "glm", "requirements.txt")), eval=FALSE}
+```
