@@ -1,0 +1,1 @@
+5e0b9429-94c5-4b18-b646-bc4a76449f3c chunk=50MiB encryption=none externaltype=rclone name=highspeed-glm prefix=git-annex rclone_layout=lower target=highspeed-glm type=external timestamp=1605457433.766659s
