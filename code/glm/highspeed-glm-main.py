@@ -17,6 +17,7 @@
 # ======================================================================
 # import basic libraries:
 import os
+import glob
 import sys
 import warnings
 from os.path import join as opj
@@ -42,7 +43,7 @@ from bids.layout import BIDSLayout
 # import custom functions:
 from highspeed_glm_functions import (
     get_subject_info, plot_stat_maps, leave_one_out)
-import datalada.api as dl
+import datalad.api as dl
 # ======================================================================
 # ENVIRONMENT SETTINGS (DEALING WITH ERRORS AND WARNINGS):
 # ======================================================================
@@ -65,7 +66,7 @@ path_root = None
 sub_list = None
 # path to the project root:
 project_name = 'highspeed-glm'
-path_root = os.getcwd().split(project_name)[0] + project_name
+path_root = os.getenv('PWD').split(project_name)[0] + project_name
 if 'darwin' in sys.platform:
     path_spm = '/Users/Shared/spm12'
     path_matlab = '/Applications/MATLAB_R2017a.app/bin/matlab -nodesktop -nosplash'
@@ -175,20 +176,20 @@ infosource.iterables = [('subject_id', sub_list)]
 # ======================================================================
 # DEFINE SELECTFILES NODE
 # ======================================================================
-path_confounds = opj(
-        path_root, 'fmriprep', '*', '*',
-        'func', '*highspeed*confounds_regressors.tsv')
-path_events = opj(
-        path_root, 'bids', '*', '*', 'func', '*events.tsv')
-path_func = opj(
-        path_root, 'fmriprep', '*',
-        'anat', '*highspeed*space-T1w*preproc_bold.nii.gz')
-path_anat = opj(
-        path_root, 'fmriprep', '*', '*',
-        'func', '*_desc-preproc_T1w.nii.gz')
-path_wholemask = opj(
-        path_root, 'fmriprep', '*', '*',
-        'func', '*highspeed*space-T1w*brain_mask.nii.gz')
+path_confounds = glob.glob(opj(
+        path_root, 'fmriprep', 'fmriprep', '*', '*',
+        'func', '*highspeed*confounds_regressors.tsv'))
+path_events = glob.glob(opj(
+        path_root, 'bids', '*', '*', 'func', '*events.tsv'))
+path_func = glob.glob(opj(
+        path_root, 'fmriprep', 'fmriprep', '*', '*',
+        'func', '*highspeed*space-T1w*preproc_bold.nii.gz'))
+path_anat = glob.glob(opj(
+        path_root, 'fmriprep', 'fmriprep', '*',
+        'anat', '*_desc-preproc_T1w.nii.gz'))
+path_wholemask = glob.glob(opj(
+        path_root, 'fmriprep', 'fmriprep', '*', '*',
+        'func', '*highspeed*space-T1w*brain_mask.nii.gz'))
 dl.get(path_confounds)
 dl.get(path_events)
 dl.get(path_func)
@@ -196,15 +197,15 @@ dl.get(path_anat)
 dl.get(path_wholemask)
 # define all relevant files paths:
 templates = dict(
-    confounds=opj(path_root, 'derivatives', 'fmriprep', '{subject_id}',
+    confounds=opj(path_root, 'fmriprep', 'fmriprep', '{subject_id}',
                   '*', 'func', '*highspeed*confounds_regressors.tsv'),
     events=opj(path_root, 'bids', '{subject_id}', '*', 'func',
                '*events.tsv'),
-    func=opj(path_root, 'derivatives', 'fmriprep', '{subject_id}', '*',
+    func=opj(path_root, 'fmriprep', 'fmriprep', '{subject_id}', '*',
              'func', '*highspeed*space-T1w*preproc_bold.nii.gz'),
-    anat=opj(path_root, 'derivatives', 'fmriprep', '{subject_id}',
+    anat=opj(path_root, 'fmriprep', 'fmriprep', '{subject_id}',
              'anat', '{subject_id}_desc-preproc_T1w.nii.gz'),
-    wholemask=opj(path_root, 'derivatives', 'fmriprep', '{subject_id}',
+    wholemask=opj(path_root, 'fmriprep', 'fmriprep', '{subject_id}',
                   '*', 'func', '*highspeed*space-T1w*brain_mask.nii.gz'),
 )
 # define the selectfiles node:
