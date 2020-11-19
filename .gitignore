@@ -5,3 +5,7 @@
 code/*/*.html
 logs
 work
+__pycache__
+pyscript.m
+stderr.nipype
+stdout.nipype
