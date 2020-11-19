@@ -6,3 +6,7 @@
 	path = tools
 	url = https://github.com/lnnrtwttkhn/tools
 	datalad-id = f86aafdc-f826-11ea-a009-d4ae5294d597
+[submodule "fmriprep"]
+	path = fmriprep
+	url = https://github.com/lnnrtwttkhn/highspeed-fmriprep.git
+	datalad-id = 5d3f9086-f9a2-11ea-ab15-acde48001122
