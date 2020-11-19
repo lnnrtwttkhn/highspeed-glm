@@ -42,6 +42,7 @@ from bids.layout import BIDSLayout
 # import custom functions:
 from highspeed_glm_functions import (
     get_subject_info, plot_stat_maps, leave_one_out)
+import datalada.api as dl
 # ======================================================================
 # ENVIRONMENT SETTINGS (DEALING WITH ERRORS AND WARNINGS):
 # ======================================================================
@@ -62,8 +63,10 @@ project = 'highspeed'
 # initialize empty paths:
 path_root = None
 sub_list = None
+# path to the project root:
+project_name = 'highspeed-glm'
+path_root = os.getcwd().split(project_name)[0] + project_name
 if 'darwin' in sys.platform:
-    path_root = opj('/Users', 'wittkuhn', 'Volumes', 'tardis_beegfs', project)
     path_spm = '/Users/Shared/spm12'
     path_matlab = '/Applications/MATLAB_R2017a.app/bin/matlab -nodesktop -nosplash'
     # set paths for spm:
@@ -72,24 +75,22 @@ if 'darwin' in sys.platform:
     MatlabCommand.set_default_matlab_cmd(path_matlab)
     sub_list = ['sub-01']
 elif 'linux' in sys.platform:
-    path_root = opj('/home', 'mpib', 'wittkuhn', project, 'highspeed-glm')
     # path_matlab = '/home/mpib/wittkuhn/spm12.simg eval \$SPMMCRCMD'
     # path_matlab = opj('/home', 'beegfs', 'wittkuhn', 'tools', 'spm', 'spm12.simg eval \$SPMMCRCMD')
     singularity_cmd = 'singularity run -B /home/mpib/wittkuhn -B /mnt/beegfs/home/wittkuhn /home/mpib/wittkuhn/highspeed/highspeed-glm/tools/spm/spm12.simg'
     singularity_spm = 'eval \$SPMMCRCMD'
     path_matlab = ' '.join([singularity_cmd, singularity_spm])
     spm.SPMCommand.set_mlab_paths(matlab_cmd=path_matlab, use_mcr=True)
-    # grab the list of subjects from the bids data set:
-    path_bids = opj(path_root, 'bids')
-    layout = BIDSLayout(path_bids)
-    # get all subject ids:
-    sub_list = sorted(layout.get_subjects())
-    # create a template to add the "sub-" prefix to the ids
-    sub_template = ['sub-'] * len(sub_list)
-    # add the prefix to all ids:
-    sub_list = ["%s%s" % t for t in zip(sub_template, sub_list)]
-    # if user defined to run specific subject
-    sub_list = sub_list[int(sys.argv[1]):int(sys.argv[2])]
+# grab the list of subjects from the bids data set:
+layout = BIDSLayout(opj(path_root, 'bids'))
+# get all subject ids:
+sub_list = sorted(layout.get_subjects())
+# create a template to add the "sub-" prefix to the ids
+sub_template = ['sub-'] * len(sub_list)
+# add the prefix to all ids:
+sub_list = ["%s%s" % t for t in zip(sub_template, sub_list)]
+# if user defined to run specific subject
+sub_list = sub_list[int(sys.argv[1]):int(sys.argv[2])]
 # print the SPM version:
 print('using SPM version %s' % spm.SPMCommand().version)
 # ======================================================================
@@ -174,6 +175,25 @@ infosource.iterables = [('subject_id', sub_list)]
 # ======================================================================
 # DEFINE SELECTFILES NODE
 # ======================================================================
+path_confounds = opj(
+        path_root, 'fmriprep', '*', '*',
+        'func', '*highspeed*confounds_regressors.tsv')
+path_events = opj(
+        path_root, 'bids', '*', '*', 'func', '*events.tsv')
+path_func = opj(
+        path_root, 'fmriprep', '*',
+        'anat', '*highspeed*space-T1w*preproc_bold.nii.gz')
+path_anat = opj(
+        path_root, 'fmriprep', '*', '*',
+        'func', '*_desc-preproc_T1w.nii.gz')
+path_wholemask = opj(
+        path_root, 'fmriprep', '*', '*',
+        'func', '*highspeed*space-T1w*brain_mask.nii.gz')
+dl.get(path_confounds)
+dl.get(path_events)
+dl.get(path_func)
+dl.get(path_anat)
+dl.get(path_wholemask)
 # define all relevant files paths:
 templates = dict(
     confounds=opj(path_root, 'derivatives', 'fmriprep', '{subject_id}',
