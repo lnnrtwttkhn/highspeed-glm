@@ -9,14 +9,14 @@ if (basename(here::here()) == "highspeed"){
 }
 ```
 
-## First-level GLMs
+## Feature selection: First-level GLMs
 
 ### Main GLM workflow (`highspeed-glm-main.py`)
 
 ```{python, echo=TRUE, code=readLines(file.path(path_root, "code", "glm", "highspeed-glm-main.py")), eval=FALSE, python.reticulate=FALSE}
 ```
 
-### Extra GLM functions ((`highspeed-glm-functions.py`))
+### Extra GLM functions (`highspeed-glm-functions.py`)
 
 ```{python, echo=TRUE, code=readLines(file.path(path_root, "code", "glm", "highspeed_glm_functions.py")), eval=FALSE, python.reticulate=FALSE}
 ```
